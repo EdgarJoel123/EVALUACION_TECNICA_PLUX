@@ -108,7 +108,7 @@ const PagoController = {
 
             res.json({
                 success: true,
-                message: 'Consulta exitosa (DUMMY)',
+                message: 'Consulta exitosa (DUMMY de prueba)',
                 estadoTransaccion: dummyEstado
             });
 
