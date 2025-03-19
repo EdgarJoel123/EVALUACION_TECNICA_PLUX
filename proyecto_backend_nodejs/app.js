@@ -1,14 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
 require('dotenv').config();
-const pool = require('./config/db'); // Conexión a PostgreSQL
+const app = express();
 
-// Middlewares
+const authRoutes = require('./routes/authRoutes');
+const pool = require('./config/db');
+
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba para ver conexión
+// Ruta ping para prueba de conexión
 app.get('/ping', async (req, res) => {
     try {
         const result = await pool.query('SELECT NOW()');
@@ -18,8 +19,11 @@ app.get('/ping', async (req, res) => {
     }
 });
 
-// Arrancar servidor
+// Rutas del backend
+app.use('/api/auth', authRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor backend corriendo en puerto ${PORT}`);
+    console.log(`🚀 Servidor backend corriendo en el puerto ${PORT}`);
+    
 });
