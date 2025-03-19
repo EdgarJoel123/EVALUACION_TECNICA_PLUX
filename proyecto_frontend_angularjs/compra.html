@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Compra iPhone | PagoPlux</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://sandbox-paybox.pagoplux.com/paybox/index.js"></script>
+  <script src="services/apiServices.js"></script>
+  <script src="controllers/compraController.js"></script>
+</head>
+<body onload="compraController.init()">
+
+  <h1>Compra tu iPhone</h1>
+
+  <p>iPhone 15 Pro Max - $1500.00</p>
+
+  <button onclick="compraController.realizarPago()">Pagar con PagoPlux</button>
+
+  <!-- Botón que despliega el Paybox -->
+  <div id="ButtonPaybox"></div>
+
+</body>
+</html>
