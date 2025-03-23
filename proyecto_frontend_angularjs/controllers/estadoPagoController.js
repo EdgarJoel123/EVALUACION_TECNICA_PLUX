@@ -20,7 +20,7 @@ var estadoPagoController = (function () {
       const result = await response.json();
 
       if (!result.success) {
-        resultadoDiv.innerHTML = `<p style="color:red;">❌ Error: ${result.message}</p>`;
+        resultadoDiv.innerHTML = `<p style="color:red;"> Error: ${result.message}</p>`;
         console.error(result);
         return;
       }
@@ -45,8 +45,8 @@ var estadoPagoController = (function () {
       console.log('✅ Resultado completo:', data);
 
     } catch (error) {
-      console.error('❌ Error al consultar el estado de pago:', error);
-      resultadoDiv.innerHTML = `<p style="color:red;">❌ Error de comunicación con el servidor.</p>`;
+      console.error(' Error al consultar el estado de pago:', error);
+      resultadoDiv.innerHTML = `<p style="color:red;"> Error de comunicación con el servidor.</p>`;
     }
   }
 

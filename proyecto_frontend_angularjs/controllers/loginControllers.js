@@ -23,7 +23,7 @@ const loginController = {
       }
 
     } catch (error) {
-      console.error('❌ Error al hacer login:', error);
+      console.error(' Error al hacer login:', error);
       alert('Error en login');
     }
   }

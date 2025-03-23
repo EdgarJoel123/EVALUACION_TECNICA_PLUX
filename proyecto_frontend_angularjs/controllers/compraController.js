@@ -1,12 +1,12 @@
 var compraController = (function () {
   
-  // 👉 Lógica para registrar el pago cuando se confirma la transacción
+  // Lógica para registrar el pago cuando se confirma la transacción
   async function registrarPago(parentId) {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
     if (!token || !userId) {
-      alert('⚠️ No hay sesión activa. Inicia sesión primero.');
+      alert('No hay sesión activa. Inicia sesión primero.');
       return;
     }
 
@@ -36,15 +36,15 @@ var compraController = (function () {
       const result = await response.json();
 
       if (result.success) {
-        console.log('✅ Registro de pago creado en backend:', result);
-        alert('✅ Registro guardado exitosamente en la base de datos.');
+        console.log('Registro de pago creado en backend:', result);
+        alert('Registro guardado exitosamente en la base de datos.');
       } else {
-        console.error('❌ Error en el registro de pago:', result.message);
-        alert('❌ Error al registrar el pago: ' + result.message);
+        console.error('Error en el registro de pago:', result.message);
+        alert('Error al registrar el pago: ' + result.message);
       }
     } catch (error) {
-      console.error('❌ Error al comunicarse con backend:', error);
-      alert('❌ Error de comunicación con el backend.');
+      console.error('Error al comunicarse con backend:', error);
+      alert('Error de comunicación con el backend.');
     }
   }
 
