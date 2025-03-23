@@ -3,7 +3,7 @@ const axios = require('axios');
 
 const PagoController = {
 
-    // 👉 Crear Link de Pago REAL
+    // Crear Link de Pago REAL
     async crearLinkPago(req, res) {
         const {
             userId,
@@ -21,7 +21,6 @@ const PagoController = {
         } = req.body;
 
         try {
-            // 1️⃣ Guarda primero en tu BD (sin parent_id)
             const insertPagoQuery = `
                 INSERT INTO papx_pagos 
                 (user_id, monto, descripcion, fecha_pago, monto_cero, monto_12, whatsapp, ci, direccion, nombre_pago, email_pago, telefono, parent_id)
@@ -46,7 +45,6 @@ const PagoController = {
 
             const pagoGuardado = insertPagoResult.rows[0];
 
-            // 2️⃣ Payload para PagoPlux (de acuerdo a la documentación)
             const payloadPagoPlux = {
                 montoCero: montoCero,
                 monto12: monto12,
@@ -59,13 +57,13 @@ const PagoController = {
                 telefono: telefono
             };
 
-            // 3️⃣ Autenticación con Basic Auth (usuario + clave secreta en base64)
+            // 3Autenticación con Basic Auth (usuario + clave secreta en base64)
             const idCliente = '8b1dnmmmTy2DqkSJMnZTF0zkY2';
             const claveSecreta = 'BClsmrXgdZUQOAuJv1OWAN8qsuqw0CB3SFefMvniooPXr3p4';
             const credentials = `${idCliente}:${claveSecreta}`;
             const authHeader = 'Basic ' + Buffer.from(credentials).toString('base64');
 
-            // 4️⃣ Consumir API de PagoPlux para crear el link de pago
+            // 4Consumir API de PagoPlux para crear el link de pago
             const apiUrl = 'https://apipre.pagoplux.com/intv1/integrations/createTransactionWhatsappResource';
 
             const pagoPluxResponse = await axios.post(apiUrl, payloadPagoPlux, {
@@ -97,7 +95,7 @@ const PagoController = {
         }
     },
 
-    // 👉 Consultar Estado de Pago REAL
+    // Consultar Estado de Pago REAL
     async consultarEstado(req, res) {
         const { parentId } = req.params;
 
@@ -109,13 +107,13 @@ const PagoController = {
                 });
             }
 
-            // 1️⃣ Autenticación con Basic Auth
+            // 1Autenticación con Basic Auth
             const idCliente = '8b1dnmmmTy2DqkSJMnZTF0zkY2';
             const claveSecreta = 'BClsmrXgdZUQOAuJv1OWAN8qsuqw0CB3SFefMvniooPXr3p4';
             const credentials = `${idCliente}:${claveSecreta}`;
             const authHeader = 'Basic ' + Buffer.from(credentials).toString('base64');
 
-            // 2️⃣ Consumir API de PagoPlux para consultar el estado de la transacción
+            // Consumir API de PagoPlux para consultar el estado de la transacción
             const apiUrl = `https://apipre.pagoplux.com/intv1/integrations/getTransactionByIdStateResource?idTransaction=${parentId}`;
 
             const estadoPagoResponse = await axios.get(apiUrl, {
@@ -126,7 +124,7 @@ const PagoController = {
             });
 
             const dataEstado = estadoPagoResponse.data;
-            console.log('✅ Estado de la transacción:', dataEstado);
+            console.log(' Estado de la transacción:', dataEstado);
 
             res.json({
                 success: true,
@@ -135,7 +133,7 @@ const PagoController = {
             });
 
         } catch (error) {
-            console.error('❌ Error en consultarEstado:', error.response ? error.response.data : error.message);
+            console.error(' Error en consultarEstado:', error.response ? error.response.data : error.message);
 
             res.status(500).json({
                 success: false,

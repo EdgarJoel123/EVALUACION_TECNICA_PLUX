@@ -36,12 +36,11 @@ const AuthController = {
 
             console.log('✅ Usuario logueado:', user.username);
 
-            // ✅ Ahora incluyes el id_user en la respuesta
             res.json({
                 success: true,
                 message: 'Login exitoso',
                 token,
-                user_id: user.id_user   // Aquí lo envías explícitamente
+                user_id: user.id_user 
             });
 
         } catch (error) {

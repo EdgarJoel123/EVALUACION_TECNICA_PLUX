@@ -13,7 +13,7 @@ const pagoRoutes = require('./routes/pagoRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 // Aquí las usas
-app.use('/api/pagos', pagoRoutes);  // 👈 esto hace que /api/pagos sea la base
+app.use('/api/pagos', pagoRoutes); 
 app.use('/api/auth', authRoutes);
 
 // Servidor
