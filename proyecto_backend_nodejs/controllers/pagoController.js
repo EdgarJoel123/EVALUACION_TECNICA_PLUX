@@ -16,15 +16,16 @@ const PagoController = {
             direccion,
             nombrePago,
             emailPago,
-            telefono
+            telefono,
+            parentId
         } = req.body;
 
         try {
             // 1️⃣ Guarda primero en tu BD (sin parent_id)
             const insertPagoQuery = `
                 INSERT INTO papx_pagos 
-                (user_id, monto, descripcion, fecha_pago, monto_cero, monto_12, whatsapp, ci, direccion, nombre_pago, email_pago, telefono)
-                VALUES ($1, $2, $3, NOW(), $4, $5, $6, $7, $8, $9, $10, $11)
+                (user_id, monto, descripcion, fecha_pago, monto_cero, monto_12, whatsapp, ci, direccion, nombre_pago, email_pago, telefono, parent_id)
+                VALUES ($1, $2, $3, NOW(), $4, $5, $6, $7, $8, $9, $10, $11, $12)
                 RETURNING *;
             `;
 
@@ -39,7 +40,8 @@ const PagoController = {
                 direccion,
                 nombrePago,
                 emailPago,
-                telefono
+                telefono,
+                parentId
             ]);
 
             const pagoGuardado = insertPagoResult.rows[0];
@@ -76,15 +78,7 @@ const PagoController = {
             const respuestaPagoPlux = pagoPluxResponse.data;
             console.log('✅ Respuesta de PagoPlux:', respuestaPagoPlux);
 
-            // 5️⃣ Si hay éxito, guardar el parentId
-            if (respuestaPagoPlux.detail && respuestaPagoPlux.detail.parentId) {
-                await pool.query(
-                    'UPDATE papx_pagos SET parent_id = $1 WHERE id_pagos = $2',
-                    [respuestaPagoPlux.detail.parentId, pagoGuardado.id_pagos]
-                );
-            }
-
-            // 6️⃣ Respuesta al frontend
+    
             res.json({
                 success: true,
                 message: 'Pago creado y link generado exitosamente',

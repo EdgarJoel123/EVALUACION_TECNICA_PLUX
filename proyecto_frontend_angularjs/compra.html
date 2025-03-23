@@ -9,41 +9,8 @@
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://sandbox-paybox.pagoplux.com/paybox/index.js"></script>
 
-  <!-- Variables de configuración del pago -->
-  <script type="text/javascript">
-    var data = {
-      PayboxRemail: "dmorales@pagoplux.com",              // ✅ Correo registrado en PagoPlux (sandbox o prod)
-      PayboxSendmail: "correocliente@gmail.com",          // Correo cliente
-      PayboxRename: "Negocio de Iphone",                  // Nombre del comercio registrado en PagoPlux
-      PayboxSendname: "Nombre Tarjetahabiente",           // Nombre tarjetahabiente
-      PayboxBase0: "5.00",                                // Base 0
-      PayboxBase12: "1500.00",                            // Base 12
-      PayboxDescription: "Compra de iPhone 15 Pro Max",   // Descripción
-      PayboxLanguage: "es",                               // Idioma
-      PayboxDirection: "Ambato",                          // Dirección del cliente
-      PayBoxClientPhone: "0989353272",                    // Teléfono del cliente
-      PayBoxClientIdentification: '1850201169',           // Cédula del cliente
-
-      PayboxProduction: false,                            // Modo sandbox
-      PayboxEnvironment: "sandbox",                       // sandbox o prod
-
-      PayboxPagoPlux: true,                               // ✅ True si quieres usar tu propio botón
-      PayboxIdElement: 'udElementoTest'                   // ✅ Este es el ID correcto del botón
-    };
-  </script>
-
-  <!-- Callback cuando la transacción es exitosa -->
-  <script type="text/javascript">
-    var onAuthorize = function(response) {
-      if (response.status === 'succeeded') {
-        console.log('✅ Proceso completado con éxito:', response);
-        alert('Proceso completado con éxito. ID Transacción: ' + response.id_transaccion);
-      } else {
-        console.log('❌ Proceso incompleto:', response);
-        alert('Proceso completado sin éxito');
-      }
-    };
-  </script>
+  <!-- Controller -->
+  <script src="controllers/compraController.js"></script>
 
   <style>
     body {
@@ -70,7 +37,104 @@
     button:hover {
       background-color: #0056b3;
     }
+
+    #transaccionInfo {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    #consultaResultado {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      text-align: left;
+      width: 50%;
+    }
   </style>
+
+  <!-- Variables de configuración del pago -->
+  <script type="text/javascript">
+    var data = {
+      PayboxRemail: "dmorales@pagoplux.com",
+      PayboxSendmail: "correocliente@gmail.com",
+      PayboxRename: "Negocio de Iphone",
+      PayboxSendname: "Nombre Tarjetahabiente",
+      PayboxBase0: "5.00",
+      PayboxBase12: "1500.00",
+      PayboxDescription: "Compra de iPhone 15 Pro Max",
+      PayboxLanguage: "es",
+      PayboxDirection: "Ambato",
+      PayBoxClientPhone: "0989353272",
+      PayBoxClientIdentification: '1850201169',
+      PayboxProduction: false,
+      PayboxEnvironment: "sandbox",
+      PayboxPagoPlux: true,
+      PayboxIdElement: 'udElementoTest'
+    };
+
+    var ultimoIdTransaccion = null;
+
+    var onAuthorize = function(response) {
+      if (response.status === 'succeeded') {
+        console.log('✅ Proceso completado con éxito:', response);
+        const idTransaccion = response.detail.id_transaccion;
+        ultimoIdTransaccion = idTransaccion;
+
+        // Mostrar en el HTML
+        const infoDiv = document.getElementById('transaccionInfo');
+        infoDiv.innerHTML = `<strong>ID de la Transacción:</strong> ${idTransaccion}`;
+
+        // Llamar al método que registra el pago
+        compraController.registrarPago(idTransaccion);
+
+      } else {
+        console.log('❌ Proceso incompleto:', response);
+        alert('Proceso completado sin éxito');
+      }
+    };
+
+    // Función para consultar estado de la transacción
+    async function consultarTransaccion() {
+      if (!ultimoIdTransaccion) {
+        alert('⚠️ No hay transacción registrada aún.');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/pagos/consultarEstado/${ultimoIdTransaccion}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token
+          }
+        });
+
+        const result = await response.json();
+
+        const resultadoDiv = document.getElementById('consultaResultado');
+        if (result.success) {
+          resultadoDiv.innerHTML = `
+            <h3>Resultado de la Transacción:</h3>
+            <p><strong>Estado:</strong> ${result.data.state}</p>
+            <p><strong>Monto:</strong> ${result.data.amount}</p>
+            <p><strong>Cliente:</strong> ${result.data.clientName}</p>
+            <p><strong>Fecha:</strong> ${result.data.fecha}</p>
+          `;
+        } else {
+          resultadoDiv.innerHTML = `<p style="color:red;">❌ Error: ${result.message}</p>`;
+        }
+
+      } catch (error) {
+        console.error('❌ Error al consultar estado:', error);
+        const resultadoDiv = document.getElementById('consultaResultado');
+        resultadoDiv.innerHTML = `<p style="color:red;">❌ Error de comunicación con backend.</p>`;
+      }
+    }
+  </script>
+
 </head>
 
 <body>
@@ -81,8 +145,14 @@
   <!-- Tu botón personalizado para enlazar a PagoPlux -->
   <button id="udElementoTest">Pagar con PagoPlux</button>
 
-  <!-- O si quieres el botón oficial de PagoPlux (opcional) -->
-  <!-- <div id="ButtonPaybox"></div> -->
+  <!-- Donde se mostrará el ID de la transacción -->
+  <div id="transaccionInfo"></div>
+
+  <!-- Botón para consultar el estado de la transacción -->
+  <button onclick="consultarTransaccion()">Consultar Transacción</button>
+
+  <!-- Resultado de la consulta -->
+  <div id="consultaResultado"></div>
 
 </body>
 </html>

@@ -1,75 +1,55 @@
-// controllers/compraController.js
+var compraController = (function () {
+  
+  // 👉 Lógica para registrar el pago cuando se confirma la transacción
+  async function registrarPago(parentId) {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
 
-const compraController = {
-    init: function () {
-      document.getElementById('btnPagar').addEventListener('click', this.realizarPago);
-    },
-  
-    realizarPago: async function () {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('user_id');
-  
-      if (!token || !userId) {
-        alert('No hay sesión activa');
-        window.location.href = 'index.html';
-        return;
-      }
-  
-      const datosPago = {
-        userId: userId,
-        monto: 1500.00,
-        descripcion: 'Compra de iPhone 15 Pro Max',
-        montoCero: 0,
-        monto12: 1500.00,
-        whatsapp: '+593999999999',
-        ci: '1710010002',
-        direccion: 'Vencedores y Acacias',
-        nombrePago: 'Cliente Demo',
-        emailPago: 'cliente@correo.com',
-        telefono: '0999999999'
-      };
-  
-      try {
-        const response = await apiServices.crearLinkPago(datosPago, token);
-  
-        if (response.success) {
-          alert('✅ Link de pago generado');
-          // Lógica para mostrar el botón de PagoPlux aquí 👇
-          compraController.generarBotonPagoPlux(response.datosGuardados);
-        } else {
-          alert('❌ Error al generar link de pago');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('❌ Error al generar link de pago');
-      }
-    },
-  
-    generarBotonPagoPlux: function (datosPago) {
-      var data = {
-        PayboxRemail: "demo@negocio.com",
-        PayboxSendmail: datosPago.email_pago,
-        PayboxRename: "Nombre del Comercio",
-        PayboxSendname: datosPago.nombre_pago,
-        PayboxBase0: datosPago.monto_cero,
-        PayboxBase12: datosPago.monto_12,
-        PayboxDescription: datosPago.descripcion,
-        PayboxProduction: false,
-        PayboxPagoPlux: true,
-        PayboxIdElement: "btnPagoPlux"
-      };
-  
-      var onAuthorize = function (response) {
-        if (response.status === 'succeeded') {
-          console.log("✅ Pago exitoso", response);
-          alert('✅ Pago exitoso');
-        }
-      };
-  
-      // Generamos el botón de pago
-      window.Paybox.init(data, onAuthorize);
+    if (!token || !userId) {
+      alert('⚠️ No hay sesión activa. Inicia sesión primero.');
+      return;
     }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/pagos/crearLinkPago', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          userId: userId,
+          monto: parseFloat(data.PayboxBase12),                          // De data
+          descripcion: data.PayboxDescription,                          // De data
+          montoCero: parseFloat(data.PayboxBase0),                      // De data
+          monto12: parseFloat(data.PayboxBase12),                      // De data
+          whatsapp: "+593989353272",                                    // Hardcodeado, cámbialo si quieres por otro campo en data
+          ci: data.PayBoxClientIdentification,                         // De data
+          direccion: data.PayboxDirection,                             // De data
+          nombrePago: data.PayboxSendname,                             // De data
+          emailPago: data.PayboxSendmail,                              // De data
+          telefono: data.PayBoxClientPhone,                            // De data
+          parentId: parentId                                           // El que devuelve la transacción
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log('✅ Registro de pago creado en backend:', result);
+        alert('✅ Registro guardado exitosamente en la base de datos.');
+      } else {
+        console.error('❌ Error en el registro de pago:', result.message);
+        alert('❌ Error al registrar el pago: ' + result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error al comunicarse con backend:', error);
+      alert('❌ Error de comunicación con el backend.');
+    }
+  }
+
+  // 👉 Exponemos las funciones públicas
+  return {
+    registrarPago
   };
-  
-  compraController.init();
-  
+})();

@@ -1,36 +1,35 @@
-// controllers/loginController.js
-
 const loginController = {
-    init: function () {
-      document.getElementById('btnLogin').addEventListener('click', this.realizarLogin);
-    },
-  
-    realizarLogin: async function () {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-  
-      if (!username || !password) {
-        alert('Por favor llena los campos');
-        return;
+  async realizarLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user_id);
+
+        alert('Login exitoso');
+        window.location.href = 'compra.html'; // Redirige a la página de compra
+      } else {
+        alert('Credenciales incorrectas');
       }
-  
-      try {
-        const response = await apiServices.login(username, password);
-  
-        if (response.success) {
-          alert('✅ Login exitoso');
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user_id', response.user_id);
-          window.location.href = 'compra.html';
-        } else {
-          alert('❌ Error en login');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('❌ Error en login');
-      }
+
+    } catch (error) {
+      console.error('❌ Error al hacer login:', error);
+      alert('Error en login');
     }
-  };
-  
-  loginController.init();
-  
+  }
+};
+
+// Este código debe estar aquí para que el botón funcione:
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnLogin').addEventListener('click', loginController.realizarLogin);
+});
