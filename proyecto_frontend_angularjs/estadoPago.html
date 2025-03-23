@@ -1,15 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Consulta Estado</title>
-</head>
-<body>
-    <h1>Consultar Estado de Pago</h1>
-    <input type="text" id="parentId" placeholder="Parent ID">
-    <button onclick="estadoPagoController.consultarEstado()">Consultar Estado</button>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado de Pago</title>
 
-    <script src="services/apiServices.js"></script>
-    <script src="controllers/estadoPagoController.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #resultadoConsulta {
+      margin-top: 30px;
+      text-align: left;
+      display: inline-block;
+      border: 1px solid #ccc;
+      padding: 15px;
+      width: 50%;
+      background: #f9f9f9;
+    }
+  </style>
+
+  <!-- Controller -->
+  <script src="controllers/estadoPagoController.js"></script>
+</head>
+
+<body>
+
+  <h1>Consultar Estado de Pago</h1>
+
+  <!-- Campo para ingresar el ID de la transacción -->
+  <input type="text" id="inputIdTransaccion" placeholder="ID de la Transacción">
+  
+  <!-- Botón para consultar -->
+  <button onclick="estadoPagoController.consultar()">Consultar Estado</button>
+
+  <!-- Resultado de la consulta -->
+  <div id="resultadoConsulta"></div>
+
 </body>
 </html>
