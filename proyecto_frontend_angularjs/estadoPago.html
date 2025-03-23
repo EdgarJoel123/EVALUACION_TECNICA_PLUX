@@ -5,33 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Estado de Pago</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 50px;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    input, button {
-      margin: 10px;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    #resultadoConsulta {
-      margin-top: 30px;
-      text-align: left;
-      display: inline-block;
-      border: 1px solid #ccc;
-      padding: 15px;
-      width: 50%;
-      background: #f9f9f9;
-    }
-  </style>
+  <!-- Link al archivo de estilos externo -->
+  <link rel="stylesheet" href="css/stylesEstado..css">
 
   <!-- Controller -->
   <script src="controllers/estadoPagoController.js"></script>
@@ -39,16 +14,16 @@
 
 <body>
 
-  <h1>Consultar Estado de Pago</h1>
+  <div class="container">
+    <h1 class="title">Consultar Estado de Pago</h1>
 
-  <!-- Campo para ingresar el ID de la transacción -->
-  <input type="text" id="inputIdTransaccion" placeholder="ID de la Transacción">
-  
-  <!-- Botón para consultar -->
-  <button onclick="estadoPagoController.consultar()">Consultar Estado</button>
+    <div class="form-group">
+      <input type="text" id="inputIdTransaccion" placeholder="ID de la Transacción" class="input-text">
+      <button onclick="estadoPagoController.consultar()" class="btn-consultar">Consultar Estado</button>
+    </div>
 
-  <!-- Resultado de la consulta -->
-  <div id="resultadoConsulta"></div>
+    <div id="resultadoConsulta" class="resultado-consulta"></div>
+  </div>
 
 </body>
 </html>

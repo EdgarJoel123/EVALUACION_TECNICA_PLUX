@@ -14,79 +14,35 @@
   <script src="controllers/compraController.js"></script>
   <script src="controllers/estadoPagoController.js"></script>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 50px;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 400px;
-      margin-top: 10px;
-    }
-
-    #transaccionInfo,
-    #consultaResultado {
-      margin-top: 20px;
-    }
-
-    #consultaResultado {
-      padding: 15px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
-      display: inline-block;
-      width: 60%;
-      text-align: left;
-    }
-  </style>
+  <!-- Archivo de estilos externos -->
+  <link rel="stylesheet" href="css/stylesCompra.css">
 </head>
 
 <body>
 
-  <h1>Compra tu iPhone</h1>
-  <p>iPhone 15 Pro Max - $1500.00</p>
+  <div class="container">
+    <h1 class="title">Compra tu iPhone</h1>
+    <p class="subtitle">iPhone 15 Pro Max - <strong>$1500.00</strong></p>
 
-  <!-- Botón de PagoPlux -->
-  <button id="udElementoTest">Pagar con PagoPlux</button>
+    <!-- Botón de PagoPlux -->
+    <button id="udElementoTest" class="btn-pago">Pagar con PagoPlux</button>
 
-  <!-- Mostrar ID transacción después del pago exitoso -->
-  <div id="transaccionInfo">
-    <label for="inputIdTransaccion"><strong>ID de la Transacción:</strong></label><br>
-    <input type="text" id="inputIdTransaccion" placeholder="Aquí se mostrará el ID..." readonly>
+    <!-- Mostrar ID transacción después del pago exitoso -->
+    <div id="transaccionInfo" class="info-container">
+      <label for="inputIdTransaccion"><strong>ID de la Transacción:</strong></label><br>
+      <input type="text" id="inputIdTransaccion" placeholder="Aquí se mostrará el ID..." readonly class="input-readonly">
+    </div>
+
+    <!-- Input para consultar estado -->
+    <div class="consulta-container">
+      <p><strong>Pega aquí el ID para consultar el estado de la transacción:</strong></p>
+      <input type="text" id="inputIdConsulta" placeholder="Pega el ID de transacción aquí..." class="input-text">
+      <button onclick="consultarTransaccion()" class="btn-consultar">Consultar Transacción</button>
+    </div>
+
+    <!-- Resultado de la consulta -->
+    <div id="consultaResultado" class="consulta-resultado"></div>
   </div>
-
-  <!-- Input para consultar estado -->
-  <div>
-    <p><strong>Pega aquí el ID para consultar el estado de la transacción:</strong></p>
-    <input type="text" id="inputIdConsulta" placeholder="Pega el ID de transacción aquí...">
-    <br>
-    <button onclick="consultarTransaccion()">Consultar Transacción</button>
-  </div>
-
-  <!-- Resultado de la consulta -->
-  <div id="consultaResultado"></div>
 
   <!-- Variables y funciones de configuración -->
   <script>

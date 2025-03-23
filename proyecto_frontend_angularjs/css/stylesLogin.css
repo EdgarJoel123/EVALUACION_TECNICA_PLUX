@@ -1,0 +1,79 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fondo general */
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor del login */
+.login-container {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 320px;
+  text-align: center;
+}
+
+/* Título */
+.login-title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* Campos de entrada */
+.login-input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.login-input:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+}
+
+/* Botón */
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #667eea;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #5a67d8;
+}
+
+/* Responsive (opcional) */
+@media (max-width: 400px) {
+  .login-container {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+}
