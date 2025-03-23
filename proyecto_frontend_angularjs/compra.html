@@ -2,23 +2,87 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Compra iPhone | PagoPlux</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compra tu iPhone</title>
+
+  <!-- Dependencias necesarias -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://sandbox-paybox.pagoplux.com/paybox/index.js"></script>
-  <script src="services/apiServices.js"></script>
-  <script src="controllers/compraController.js"></script>
+
+  <!-- Variables de configuración del pago -->
+  <script type="text/javascript">
+    var data = {
+      PayboxRemail: "dmorales@pagoplux.com",              // ✅ Correo registrado en PagoPlux (sandbox o prod)
+      PayboxSendmail: "correocliente@gmail.com",          // Correo cliente
+      PayboxRename: "Negocio de Iphone",                  // Nombre del comercio registrado en PagoPlux
+      PayboxSendname: "Nombre Tarjetahabiente",           // Nombre tarjetahabiente
+      PayboxBase0: "5.00",                                // Base 0
+      PayboxBase12: "1500.00",                            // Base 12
+      PayboxDescription: "Compra de iPhone 15 Pro Max",   // Descripción
+      PayboxLanguage: "es",                               // Idioma
+      PayboxDirection: "Ambato",                          // Dirección del cliente
+      PayBoxClientPhone: "0989353272",                    // Teléfono del cliente
+      PayBoxClientIdentification: '1850201169',           // Cédula del cliente
+
+      PayboxProduction: false,                            // Modo sandbox
+      PayboxEnvironment: "sandbox",                       // sandbox o prod
+
+      PayboxPagoPlux: true,                               // ✅ True si quieres usar tu propio botón
+      PayboxIdElement: 'udElementoTest'                   // ✅ Este es el ID correcto del botón
+    };
+  </script>
+
+  <!-- Callback cuando la transacción es exitosa -->
+  <script type="text/javascript">
+    var onAuthorize = function(response) {
+      if (response.status === 'succeeded') {
+        console.log('✅ Proceso completado con éxito:', response);
+        alert('Proceso completado con éxito. ID Transacción: ' + response.id_transaccion);
+      } else {
+        console.log('❌ Proceso incompleto:', response);
+        alert('Proceso completado sin éxito');
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
-<body onload="compraController.init()">
+
+<body>
 
   <h1>Compra tu iPhone</h1>
-
   <p>iPhone 15 Pro Max - $1500.00</p>
 
-  <button onclick="compraController.realizarPago()">Pagar con PagoPlux</button>
+  <!-- Tu botón personalizado para enlazar a PagoPlux -->
+  <button id="udElementoTest">Pagar con PagoPlux</button>
 
-  <!-- Botón que despliega el Paybox -->
-  <div id="ButtonPaybox"></div>
+  <!-- O si quieres el botón oficial de PagoPlux (opcional) -->
+  <!-- <div id="ButtonPaybox"></div> -->
 
 </body>
 </html>

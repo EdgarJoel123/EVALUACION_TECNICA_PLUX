@@ -2,17 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login | PagoPlux</title>
+  <title>Login</title>
   <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1>Login</h1>
+  <input id="username" type="text" placeholder="Usuario">
+  <input id="password" type="password" placeholder="Contraseña">
+  <button id="btnLogin">Iniciar Sesión</button>
+
   <script src="services/apiServices.js"></script>
   <script src="controllers/loginControllers.js"></script>
-</head>
-<body onload="loginController.init()">
-
-  <h1>Login</h1>
-  <input type="text" id="username" placeholder="Usuario">
-  <input type="password" id="password" placeholder="Contraseña">
-  <button onclick="loginController.login()">Iniciar Sesión</button>
-
 </body>
 </html>

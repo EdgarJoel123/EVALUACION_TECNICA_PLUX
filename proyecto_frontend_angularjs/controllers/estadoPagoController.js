@@ -1,27 +1,32 @@
+// controllers/estadoPagoController.js
+
 const estadoPagoController = {
-    init: function() {
-      console.log('Estado Pago Controller Loaded');
-    },
-  
-    consultar: async function() {
-      const parentId = document.getElementById('parentId').value;
-  
-      if (!parentId) {
-        alert('⚠️ Debes ingresar el parentId');
-        return;
-      }
-  
-      const response = await apiServices.consultarEstado(parentId);
-  
-      if (response.success) {
-        const resultado = document.getElementById('resultado');
-        resultado.innerHTML = `
-          <p><strong>Estado:</strong> ${response.estadoTransaccion.status}</p>
-          <p><strong>Descripción:</strong> ${response.estadoTransaccion.description}</p>
-        `;
-      } else {
-        alert('❌ ' + response.message);
-      }
+  init: function () {
+    document.getElementById('btnConsultarEstado').addEventListener('click', this.consultarEstadoPago);
+  },
+
+  consultarEstadoPago: async function () {
+    const token = localStorage.getItem('token');
+    const parentId = document.getElementById('parentId').value;
+
+    if (!token || !parentId) {
+      alert('❌ Faltan datos para consultar');
+      return;
     }
-  };
-  
+
+    try {
+      const response = await apiServices.consultarEstado(parentId, token);
+
+      if (response.success) {
+        alert(`✅ Estado: ${response.estadoTransaccion.status}`);
+      } else {
+        alert('❌ No se encontró la transacción');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('❌ Error en la consulta');
+    }
+  }
+};
+
+estadoPagoController.init();

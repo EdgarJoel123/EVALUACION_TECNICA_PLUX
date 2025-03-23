@@ -1,9 +1,9 @@
 const pool = require('../config/db');
 const axios = require('axios');
-const { v4: uuidv4 } = require('uuid'); // Para generar parentId dummy
 
 const PagoController = {
-    // 🔹 1. Crear link de pago (con dummy)
+
+    // 👉 Crear Link de Pago REAL
     async crearLinkPago(req, res) {
         const {
             userId,
@@ -20,7 +20,7 @@ const PagoController = {
         } = req.body;
 
         try {
-            // 1. Guardamos en la BD
+            // 1️⃣ Guarda primero en tu BD (sin parent_id)
             const insertPagoQuery = `
                 INSERT INTO papx_pagos 
                 (user_id, monto, descripcion, fecha_pago, monto_cero, monto_12, whatsapp, ci, direccion, nombre_pago, email_pago, telefono)
@@ -44,44 +44,66 @@ const PagoController = {
 
             const pagoGuardado = insertPagoResult.rows[0];
 
-            // 2. Simulamos el parentId (como si viniera de PagoPlux)
-            const dummyParentId = uuidv4(); // Genera un UUID aleatorio como parentId
+            // 2️⃣ Payload para PagoPlux (de acuerdo a la documentación)
+            const payloadPagoPlux = {
+                montoCero: montoCero,
+                monto12: monto12,
+                whatsapp: whatsapp,
+                descripcion: descripcion,
+                ci: ci,
+                direccion: direccion,
+                nombrePago: nombrePago,
+                emailPago: emailPago,
+                telefono: telefono
+            };
 
-            // 3. Guardamos el parentId en la BD
-            await pool.query(
-                'UPDATE papx_pagos SET parent_id = $1 WHERE id_pagos = $2',
-                [dummyParentId, pagoGuardado.id_pagos]
-            );
+            // 3️⃣ Autenticación con Basic Auth (usuario + clave secreta en base64)
+            const idCliente = '8b1dnmmmTy2DqkSJMnZTF0zkY2';
+            const claveSecreta = 'BClsmrXgdZUQOAuJv1OWAN8qsuqw0CB3SFefMvniooPXr3p4';
+            const credentials = `${idCliente}:${claveSecreta}`;
+            const authHeader = 'Basic ' + Buffer.from(credentials).toString('base64');
 
-            res.json({
-                success: true,
-                message: 'Pago (DUMMY) creado y link generado exitosamente',
-                datosGuardados: {
-                    ...pagoGuardado,
-                    parent_id: dummyParentId
-                },
-                respuestaPagoPlux: {
-                    code: 0,
-                    description: 'DUMMY: Link de pago creado correctamente.',
-                    detail: {
-                        parentId: dummyParentId
-                    },
-                    status: 'succeded'
+            // 4️⃣ Consumir API de PagoPlux para crear el link de pago
+            const apiUrl = 'https://apipre.pagoplux.com/intv1/integrations/createTransactionWhatsappResource';
+
+            const pagoPluxResponse = await axios.post(apiUrl, payloadPagoPlux, {
+                headers: {
+                    'Authorization': authHeader,
+                    'Content-Type': 'application/json'
                 }
             });
 
+            const respuestaPagoPlux = pagoPluxResponse.data;
+            console.log('✅ Respuesta de PagoPlux:', respuestaPagoPlux);
+
+            // 5️⃣ Si hay éxito, guardar el parentId
+            if (respuestaPagoPlux.detail && respuestaPagoPlux.detail.parentId) {
+                await pool.query(
+                    'UPDATE papx_pagos SET parent_id = $1 WHERE id_pagos = $2',
+                    [respuestaPagoPlux.detail.parentId, pagoGuardado.id_pagos]
+                );
+            }
+
+            // 6️⃣ Respuesta al frontend
+            res.json({
+                success: true,
+                message: 'Pago creado y link generado exitosamente',
+                datosGuardados: pagoGuardado,
+                respuestaPagoPlux
+            });
+
         } catch (error) {
-            console.error('❌ Error en crearLinkPago:', error.message);
+            console.error('❌ Error en crearLinkPago:', error.response ? error.response.data : error.message);
 
             res.status(500).json({
                 success: false,
                 message: 'Error al procesar el pago o generar el link',
-                error: error.message
+                error: error.response ? error.response.data : error.message
             });
         }
     },
 
-    // 🔹 2. Consultar el estado de la transacción (con dummy)
+    // 👉 Consultar Estado de Pago REAL
     async consultarEstado(req, res) {
         const { parentId } = req.params;
 
@@ -93,31 +115,38 @@ const PagoController = {
                 });
             }
 
-            // 🔸 Simulación del estado (dummy)
-            const estados = ['paid', 'pending', 'failed'];
-            const randomEstado = estados[Math.floor(Math.random() * estados.length)];
+            // 1️⃣ Autenticación con Basic Auth
+            const idCliente = '8b1dnmmmTy2DqkSJMnZTF0zkY2';
+            const claveSecreta = 'BClsmrXgdZUQOAuJv1OWAN8qsuqw0CB3SFefMvniooPXr3p4';
+            const credentials = `${idCliente}:${claveSecreta}`;
+            const authHeader = 'Basic ' + Buffer.from(credentials).toString('base64');
 
-            const dummyEstado = {
-                code: 0,
-                description: `DUMMY: Estado de la transacción es ${randomEstado}`,
-                detail: {
-                    parentId
-                },
-                status: randomEstado
-            };
+            // 2️⃣ Consumir API de PagoPlux para consultar el estado de la transacción
+            const apiUrl = `https://apipre.pagoplux.com/intv1/integrations/getTransactionByIdStateResource?idTransaction=${parentId}`;
+
+            const estadoPagoResponse = await axios.get(apiUrl, {
+                headers: {
+                    'Authorization': authHeader,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const dataEstado = estadoPagoResponse.data;
+            console.log('✅ Estado de la transacción:', dataEstado);
 
             res.json({
                 success: true,
-                message: 'Consulta exitosa (DUMMY de prueba)',
-                estadoTransaccion: dummyEstado
+                message: 'Consulta exitosa',
+                estadoTransaccion: dataEstado
             });
 
         } catch (error) {
-            console.error('❌ Error en consultarEstado:', error.message);
+            console.error('❌ Error en consultarEstado:', error.response ? error.response.data : error.message);
+
             res.status(500).json({
                 success: false,
                 message: 'Error al consultar estado de la transacción',
-                error: error.message
+                error: error.response ? error.response.data : error.message
             });
         }
     }
