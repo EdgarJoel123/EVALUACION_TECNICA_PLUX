@@ -42,7 +42,7 @@ var estadoPagoController = (function () {
         <p><strong>Fecha Transacción:</strong> ${new Date(data.fecha_transaccion).toLocaleString()}</p>
       `;
 
-      console.log('✅ Resultado completo:', data);
+      console.log(' Resultado completo:', data);
 
     } catch (error) {
       console.error(' Error al consultar el estado de pago:', error);

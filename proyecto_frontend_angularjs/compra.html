@@ -113,7 +113,7 @@
     // CALLBACK después del pago
     var onAuthorize = function (response) {
       if (response.status === 'succeeded') {
-        console.log('✅ Proceso completado con éxito:', response);
+        console.log(' Proceso completado con éxito:', response);
         const idTransaccion = response.detail.id_transaccion;
         ultimoIdTransaccion = idTransaccion;
 
@@ -124,7 +124,7 @@
         compraController.registrarPago(idTransaccion);
 
       } else {
-        console.log('❌ Proceso incompleto:', response);
+        console.log(' Proceso incompleto:', response);
         alert('Proceso completado sin éxito');
       }
     };
@@ -134,7 +134,7 @@
       const inputConsulta = document.getElementById('inputIdConsulta').value.trim();
 
       if (!inputConsulta) {
-        alert('⚠️ Debes ingresar el ID de la transacción para consultar.');
+        alert(' Debes ingresar el ID de la transacción para consultar.');
         return;
       }
 
