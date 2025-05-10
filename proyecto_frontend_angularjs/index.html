@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/stylesLogin.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1 class="login-title">Iniciar Sesión</h1>
+    <form class="login-form">
+      <input id="username" type="text" placeholder="Usuario" class="login-input" required>
+      <input id="password" type="password" placeholder="Contraseña" class="login-input" required>
+      <button id="btnLogin" type="button" class="login-button">Ingresar</button>
+    </form>
+  </div>
+
+  <script src="services/apiServices.js"></script>
+  <script src="controllers/loginControllers.js"></script>
+</body>
+</html>

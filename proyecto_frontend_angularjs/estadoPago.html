@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado de Pago</title>
+
+  <!-- Link al archivo de estilos externo -->
+  <link rel="stylesheet" href="css/stylesEstado..css">
+
+  <!-- Controller -->
+  <script src="controllers/estadoPagoController.js"></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1 class="title">Consultar Estado de Pago</h1>
+
+    <div class="form-group">
+      <input type="text" id="inputIdTransaccion" placeholder="ID de la Transacción" class="input-text">
+      <button onclick="estadoPagoController.consultar()" class="btn-consultar">Consultar Estado</button>
+    </div>
+
+    <div id="resultadoConsulta" class="resultado-consulta"></div>
+  </div>
+
+</body>
+</html>
